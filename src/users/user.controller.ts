@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import mongoose from 'mongoose';
+import { UpdateUserDto } from './dto/UpdateUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -35,5 +36,10 @@ export class UsersController {
   }
 
   @Patch(':id')
-  async updateUser(@Param('id') id: string) {}
+  async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const isValid = mongoose.Types.ObjectId.isValid(id);
+    if (!isValid) throw new HttpException('Invalid ID', 400)
+      return this.usersService.updateUser(id, updateUserDto);
+
+  }
 }
